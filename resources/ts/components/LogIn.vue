@@ -6,13 +6,14 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
+
 export default defineComponent({
-    name: "SignIn",
+    name: "LogIn",
     created() {
-        this.signIn();
+        this.logIn();
     },
     methods: {
-        signIn() {
+        logIn() {
             return this.$store.dispatch("login")
         }
     }

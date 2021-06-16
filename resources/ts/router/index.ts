@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import HelloWorld from "../components/HelloWorld.vue";
-import SignIn from "../components/SignIn.vue";
+import LogIn from "../components/LogIn.vue";
 
 const routes: RouteRecordRaw[] = [
     {
@@ -9,7 +9,7 @@ const routes: RouteRecordRaw[] = [
     },
     {
         path: "/login",
-        component: SignIn,
+        component: LogIn,
     }
 ];
 
