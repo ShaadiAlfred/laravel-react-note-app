@@ -12,17 +12,8 @@ const webpack = require('webpack');
  |
  */
 
-mix.webpackConfig ({
-    plugins: [
-        new webpack.DefinePlugin({
-            __VUE_OPTIONS_API__: true,
-            __VUE_PROD_DEVTOOLS__: false,
-        }),
-    ],
-});
-
-mix.ts('resources/ts/app.ts', 'public/js')
-    .vue({ version: 3 })
+mix.ts('resources/ts/app.tsx', 'public/js')
+    .react()
     .postCss('resources/css/app.css', 'public/css', [
         //
     ]);
