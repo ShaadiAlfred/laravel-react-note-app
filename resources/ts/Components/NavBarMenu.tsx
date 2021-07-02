@@ -1,6 +1,7 @@
 import React from "react";
 import { Drawer, List, ListItem, ListItemIcon, ListItemText } from "@material-ui/core";
-import InboxIcon from '@material-ui/icons/MoveToInbox';
+import HomeIcon from "@material-ui/icons/HomeRounded"
+import HelpIcon from "@material-ui/icons/Help"
 import { Link as RouterLink } from "react-router-dom";
 
 interface props {
@@ -19,8 +20,12 @@ const NavBarMenu = (props: props) => {
                         onKeyDown={props.toggleDrawerHandler()}
                     >
                         <List>
+                            <ListItem button component={RouterLink} to="/">
+                                <ListItemIcon><HomeIcon /></ListItemIcon>
+                                <ListItemText primary="Home" />
+                            </ListItem>
                             <ListItem button component={RouterLink} to="/about">
-                                <ListItemIcon><InboxIcon /></ListItemIcon>
+                                <ListItemIcon><HelpIcon /></ListItemIcon>
                                 <ListItemText primary="About" />
                             </ListItem>
                         </List>

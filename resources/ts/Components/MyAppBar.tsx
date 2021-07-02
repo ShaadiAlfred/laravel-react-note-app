@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { fade, makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -12,6 +12,8 @@ import SearchIcon from "@material-ui/icons/Search";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import MoreIcon from "@material-ui/icons/MoreVert";
 import NavBarMenu from "./NavBarMenu";
+import { useDispatch, useSelector } from "react-redux";
+import { getUser, login } from "../store/Auth";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -80,7 +82,19 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 export default function MyAppBar() {
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(login({
+            email: "admin@admin.com",
+            password: "password"
+        }));
+    }, [dispatch]);
+
+    const user = useSelector(getUser);
+
     const classes = useStyles();
+
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState<null | HTMLElement>(null);
 
@@ -173,7 +187,7 @@ export default function MyAppBar() {
                         <MenuIcon />
                     </IconButton>
                     <Typography className={classes.title} variant="h6" noWrap>
-                        Notes
+                        {user?.name}
                     </Typography>
                     <div className={classes.search}>
                         <div className={classes.searchIcon}>
