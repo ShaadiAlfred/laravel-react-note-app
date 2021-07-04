@@ -1,5 +1,4 @@
 const mix = require('laravel-mix');
-const webpack = require('webpack');
 
 /*
  |--------------------------------------------------------------------------
@@ -17,3 +16,10 @@ mix.ts('resources/ts/app.tsx', 'public/js')
     .postCss('resources/css/app.css', 'public/css', [
         //
     ]);
+
+mix.options({
+    hmrOptions: {
+        host: '0.0.0.0',
+        port: 8080,
+    },
+});
