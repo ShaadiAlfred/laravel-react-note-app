@@ -7,6 +7,7 @@ import {
     Route,
 } from "react-router-dom";
 import Login from "./Login";
+import Notes from "./Notes";
 
 const App = () => {
     return (
@@ -20,6 +21,9 @@ const App = () => {
                     </Route>
                     <Route path="/login">
                         <Login />
+                    </Route>
+                    <Route path="/notes">
+                        <Notes />
                     </Route>
                     <Route path="/">
                         <h1>Hello World</h1>

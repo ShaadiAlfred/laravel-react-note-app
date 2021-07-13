@@ -8,9 +8,8 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { Container, IconButton, Snackbar, TextField } from "@material-ui/core";
 import CloseIcon from '@material-ui/icons/Close';
-import { useSelector } from "react-redux";
 import { login } from "../store/Auth";
-import { RootState, useAppDispatch } from "../store";
+import { useAppDispatch } from "../store";
 import { useHistory } from "react-router";
 
 const useStyles = makeStyles({
