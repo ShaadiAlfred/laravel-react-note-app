@@ -6,6 +6,7 @@ import {
     Switch,
     Route,
 } from "react-router-dom";
+import Login from "./Login";
 
 const App = () => {
     return (
@@ -16,6 +17,9 @@ const App = () => {
                 <Switch>
                     <Route path="/about">
                         <h1>About</h1>
+                    </Route>
+                    <Route path="/login">
+                        <Login />
                     </Route>
                     <Route path="/">
                         <h1>Hello World</h1>

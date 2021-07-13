@@ -5,14 +5,18 @@ import { Credentials, User } from "../types";
 
 const initialState: {
     user: User | null;
+    error: boolean;
+    loading: boolean;
 } = {
     user:  null,
+    error: false,
+    loading: false,
 };
 
 export const login = createAsyncThunk(
     "user/login",
     async (credentials: Credentials) => {
-        await axios.get("/sanctum/csrf-cookie")
+        await axios.get("/sanctum/csrf-cookie");
 
         try {
             await axios.post("/login", credentials);
@@ -21,24 +25,43 @@ export const login = createAsyncThunk(
 
             return response.data;
         } catch (e) {
-            console.error("Failed to login", e);
             return null;
         }
-
     }
 );
+
+export const logout = createAsyncThunk(
+    "user/logout",
+    async () => {
+        await axios.post("/logout");
+
+        return null;
+    }
+)
 
 export const authSlice = createSlice({
     name: "auth",
     initialState,
-    reducers: {
-        logout: (state) => {
-            state.user = null;
-        }
-    },
+    reducers: {},
     extraReducers: (builder) => {
+        builder.addCase(login.pending, (state) => {
+            state.loading = true;
+        });
+
         builder.addCase(login.fulfilled, (state, action) => {
+            state.error = action.payload === null;
+            state.loading = false;
             state.user = action.payload;
+        });
+
+        builder.addCase(logout.pending, (state) => {
+            state.loading = true;
+        });
+
+        builder.addCase(logout.fulfilled, (state) => {
+            state.loading = false;
+            state.user = null;
+            state.error = false;
         });
     }
 });

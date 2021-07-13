@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { fade, makeStyles, Theme, createStyles } from "@material-ui/core/styles";
+import React, { useState } from "react";
+import { createStyles, fade, makeStyles, Theme } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
@@ -13,7 +13,9 @@ import AccountCircle from "@material-ui/icons/AccountCircle";
 import MoreIcon from "@material-ui/icons/MoreVert";
 import NavBarMenu from "./NavBarMenu";
 import { useDispatch, useSelector } from "react-redux";
-import { getUser, login } from "../store/Auth";
+import { getUser, logout } from "../store/Auth";
+import { Button, Divider } from "@material-ui/core";
+import { Link as RouterLink } from "react-router-dom";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -81,15 +83,9 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
+
 export default function MyAppBar() {
     const dispatch = useDispatch();
-
-    useEffect(() => {
-        dispatch(login({
-            email: "admin@admin.com",
-            password: "password"
-        }));
-    }, [dispatch]);
 
     const user = useSelector(getUser);
 
@@ -131,8 +127,32 @@ export default function MyAppBar() {
         >
             <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
             <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+            <Divider />
+            <MenuItem onClick={() => { dispatch(logout()); setAnchorEl(null) }}>Logout</MenuItem>
         </Menu>
     );
+
+    const loginButton = <Button variant="contained" component={RouterLink} to="/login">
+        Login
+    </Button>;
+
+    let profile;
+    if (user !== null) {
+        profile = <div className={classes.sectionDesktop}>
+            <IconButton
+                edge="end"
+                aria-label="account of current user"
+                aria-controls={menuId}
+                aria-haspopup="true"
+                onClick={handleProfileMenuOpen}
+                color="inherit"
+            >
+                <AccountCircle />
+            </IconButton>
+        </div>
+    } else {
+        profile = loginButton;
+    }
 
     const mobileMenuId = "primary-search-account-menu-mobile";
     const renderMobileMenu = (
@@ -145,7 +165,7 @@ export default function MyAppBar() {
             open={isMobileMenuOpen}
             onClose={handleMobileMenuClose}
         >
-            <MenuItem onClick={handleProfileMenuOpen}>
+            <MenuItem>
                 <IconButton
                     aria-label="account of current user"
                     aria-controls="primary-search-account-menu"
@@ -156,8 +176,26 @@ export default function MyAppBar() {
                 </IconButton>
                 <p>Profile</p>
             </MenuItem>
+            <Divider />
+            <MenuItem onClick={() => { dispatch(logout()); setMobileMoreAnchorEl(null) }}>Logout</MenuItem>
+            {renderMenu}
         </Menu>
     );
+
+    let mobileMenuButton = null;
+    if (user !== null) {
+        mobileMenuButton = <div className={classes.sectionMobile}>
+                <IconButton
+                    aria-label="show more"
+                    aria-controls={mobileMenuId}
+                    aria-haspopup="true"
+                    onClick={handleMobileMenuOpen}
+                    color="inherit"
+                >
+                    <MoreIcon />
+                </IconButton>
+            </div>;
+    }
 
     const [isNavBarMenuOpen, setIsNavBarMenuOpen] = useState(false);
 
@@ -173,6 +211,7 @@ export default function MyAppBar() {
         setIsNavBarMenuOpen(! isNavBarMenuOpen);
     }
 
+
     return (
         <div className={classes.grow}>
             <AppBar position="static">
@@ -187,7 +226,7 @@ export default function MyAppBar() {
                         <MenuIcon />
                     </IconButton>
                     <Typography className={classes.title} variant="h6" noWrap>
-                        {user?.name}
+                        Notes
                     </Typography>
                     <div className={classes.search}>
                         <div className={classes.searchIcon}>
@@ -203,36 +242,15 @@ export default function MyAppBar() {
                         />
                     </div>
                     <div className={classes.grow} />
-                    <div className={classes.sectionDesktop}>
-                        <IconButton
-                            edge="end"
-                            aria-label="account of current user"
-                            aria-controls={menuId}
-                            aria-haspopup="true"
-                            onClick={handleProfileMenuOpen}
-                            color="inherit"
-                        >
-                            <AccountCircle />
-                        </IconButton>
-                    </div>
-                    <div className={classes.sectionMobile}>
-                        <IconButton
-                            aria-label="show more"
-                            aria-controls={mobileMenuId}
-                            aria-haspopup="true"
-                            onClick={handleMobileMenuOpen}
-                            color="inherit"
-                        >
-                            <MoreIcon />
-                        </IconButton>
-                    </div>
+                    {profile}
+                    {mobileMenuButton}
                 </Toolbar>
             </AppBar>
+
             {renderMobileMenu}
             {renderMenu}
 
-
-            <NavBarMenu isOpen={isNavBarMenuOpen}  toggleDrawerHandler={toggleDrawerHandler} />
+            <NavBarMenu isOpen={isNavBarMenuOpen} toggleDrawerHandler={toggleDrawerHandler} />
 
         </div>
     );
