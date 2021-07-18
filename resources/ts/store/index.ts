@@ -1,10 +1,12 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import authReducer from "./Auth";
 import { useDispatch } from "react-redux";
+import notesReducer from "./Notes";
 
 export const store = configureStore({
     reducer: {
         auth: authReducer,
+        notes: notesReducer,
     },
     devTools: (window as any).__REDUX_DEVTOOLS_EXTENSION__ && (window as any).__REDUX_DEVTOOLS_EXTENSION__()
 });

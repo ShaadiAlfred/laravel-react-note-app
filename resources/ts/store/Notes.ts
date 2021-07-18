@@ -1,71 +1,107 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { RootState } from "./index";
-import { Credentials, User } from "../types";
+import { NewNote, Note } from "../types";
 
 const initialState: {
-    user: User | null;
+    notes: Note[];
     error: boolean;
     loading: boolean;
 } = {
-    user:  null,
+    notes: [],
     error: false,
     loading: false,
 };
 
-export const login = createAsyncThunk(
-    "user/login",
-    async (credentials: Credentials) => {
-        await axios.get("/sanctum/csrf-cookie");
-
+export const fetchNotes = createAsyncThunk(
+    "notes/get",
+    async () => {
         try {
-            await axios.post("/login", credentials);
-
-            const response = await axios.get("/api/user");
+            const response = await axios.get("/api/notes");
 
             return response.data;
+
         } catch (e) {
+
             return null;
+
         }
     }
 );
 
-export const logout = createAsyncThunk(
-    "user/logout",
-    async () => {
-        await axios.post("/logout");
+export const deleteNote = createAsyncThunk(
+    "notes/destroy",
+    async (id: number) => {
+        try {
+            const response = await axios.delete(`/api/notes/${id}`);
 
-        return null;
+            return response.data;
+
+        } catch (e) {
+
+            return null;
+
+        }
     }
-)
+);
 
-export const authSlice = createSlice({
-    name: "auth",
+export const addNote = createAsyncThunk(
+    "notes/add",
+    async (newNote: NewNote) => {
+        try {
+            const response = await axios.post("/api/notes", newNote);
+
+            return response.data;
+
+        } catch (e) {
+
+            return null;
+
+        }
+    }
+);
+
+export const notesSlice = createSlice({
+    name: "notes",
     initialState,
     reducers: {},
     extraReducers: (builder) => {
-        builder.addCase(login.pending, (state) => {
+        builder.addCase(fetchNotes.pending, (state) => {
             state.loading = true;
         });
 
-        builder.addCase(login.fulfilled, (state, action) => {
+        builder.addCase(fetchNotes.fulfilled, (state, action) => {
             state.error = action.payload === null;
             state.loading = false;
-            state.user = action.payload;
+            state.notes = action.payload;
         });
 
-        builder.addCase(logout.pending, (state) => {
+        builder.addCase(deleteNote.pending, (state) => {
             state.loading = true;
         });
 
-        builder.addCase(logout.fulfilled, (state) => {
+        builder.addCase(deleteNote.fulfilled, (state, action) => {
+            if (action.payload === null) {
+                state.error = true;
+            } else {
+                state.error = false;
+                state.notes = state.notes.filter(note => note.id !== action.payload);
+            }
             state.loading = false;
-            state.user = null;
-            state.error = false;
+        });
+
+        builder.addCase(addNote.pending, (state) => {
+            state.loading = true;
+        });
+
+        builder.addCase(addNote.fulfilled, (state, action) => {
+            state.error = action.payload === null;
+            state.loading = false;
+            state.notes.unshift(action.payload);
         });
     }
 });
 
-export const getUser = (state: RootState) => state.auth.user;
+export const getNotes = (state: RootState) => state.notes.notes;
 
-export default authSlice.reducer;
+export default notesSlice.reducer;
