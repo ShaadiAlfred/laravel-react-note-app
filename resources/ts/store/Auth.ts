@@ -16,11 +16,7 @@ const initialState: {
 export const login = createAsyncThunk(
     "user/login",
     async (credentials: Credentials) => {
-        try {
-            await axios.get("/sanctum/csrf-cookie");
-        } catch (e) {
-            
-        }
+        await axios.get("/sanctum/csrf-cookie");
 
         try {
             await axios.post("/login", credentials);
